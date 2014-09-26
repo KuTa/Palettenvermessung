@@ -1,5 +1,6 @@
 #include "grabber.h"
 #include <pcl/filters/voxel_grid.h>
+#include <chrono>
 
 Grabber::Grabber(QObject *parent):
         QObject(parent)
@@ -8,13 +9,14 @@ Grabber::Grabber(QObject *parent):
   
 }
 
-/*Grabber::~Grabber()
+Grabber::~Grabber()
 {
     if(interface != 0)
     {
         interface->stop();
         interface.reset();
     }
+    frameThread.detach();
 }
 /*
  * Function to initialize the Camera with OpenNI2Grabber
@@ -28,8 +30,12 @@ bool Grabber::initCamera()
    interface = boost::shared_ptr<pcl::io::OpenNI2Grabber>(new pcl::io::OpenNI2Grabber("#1"));
    boost::function<void (const boost::shared_ptr<const PointCloudT>&)> g =
            boost::bind (&Grabber::updatePtr, this, _1);
+   boost::function<void (const boost::shared_ptr<pcl::io::openni2::Image>&)> f = boost::bind (&Grabber::updateImg, this, _1);
    interface->registerCallback(g);
+   interface->registerCallback(f);
    interface->start();
+   frameThread = std::thread(&Grabber::frames,this);
+
  }
  catch(pcl::IOException e)
  {
@@ -47,12 +53,31 @@ bool Grabber::ready()
     bool ready = false;
     if( cloudPtr != boost::shared_ptr<const PointCloudT>() && !cloudPtr->empty()
             )
+    {
         ready=true;
+        image = QImage(cloudPtr->width, cloudPtr->height, QImage::Format_RGB32);
+    }
     return ready;
+}
+
+void Grabber::isRunning()
+{
+    interface->isRunning();
+}
+void Grabber::frames() const
+{
+    const std::chrono::milliseconds dura(500);
+    int frame;
+    while(true){
+        frame = static_cast<int>(interface->getFramesPerSecond());
+        emit currentFrames(frame);
+        std::this_thread::sleep_for(dura);
+    }
 }
 
 PointCloudT::Ptr Grabber::getCloud()
 {
+
     updatePtr(cloudPtr);
     while(cloudPtr == 0)
     {
@@ -78,4 +103,9 @@ void Grabber::updatePtr(const boost::shared_ptr<const PointCloudT>& cloud)
     usleep(50);
     this->cloudPtr = cloud;
     mut.unlock();
+}
+void Grabber::updateImg(const boost::shared_ptr<const pcl::io::openni2::Image>& img)
+{
+
+    this->image.fromData(img->getData());
 }
