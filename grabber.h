@@ -10,6 +10,10 @@
 #include <pcl/filters/passthrough.h>
 
 #include <QObject>
+#include <QImage>
+
+#include <iostream>
+#include <thread>
 
 typedef pcl::PointXYZRGBA PointT;
 typedef pcl::PointCloud<PointT> PointCloudT;
@@ -22,21 +26,27 @@ class Grabber : public QObject
 */
 public:
   explicit Grabber(QObject *parent = 0);
-  //~Grabber();
+  ~Grabber();
   bool initCamera();
   bool ready();
+  void frames() const;
+  void isRunning();
   PointCloudT::Ptr  getCloud();
-
+  QImage image;
+signals:
+  void currentFrames(int frame_var) const;
 private:
   /*
    * private funtions
    * 
    */
   void updatePtr(const boost::shared_ptr<const PointCloudT>& cloud);
+  void updateImg(const boost::shared_ptr<const pcl::io::openni2::Image>& img);
   /*
    * private variables
    * 
    */
+  std::thread frameThread;
   boost::shared_ptr<pcl::Grabber> interface;
   boost::mutex mut;
   boost::shared_ptr<const PointCloudT> cloudPtr;

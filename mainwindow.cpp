@@ -19,17 +19,21 @@ MainWindow::MainWindow(QWidget *parent) :
     grabber = new Grabber();
     grabber->moveToThread(grabberThread);
     grabberThread->start();
-    //connect(grabber,SIGNAL(started()),grabberThread, SLOT(start) )
     grabber->initCamera();
     connect(ui->startButton, SIGNAL(released()), this, SLOT(startButtonPressed()) );
     connect(ui->updateButton, SIGNAL(released()), this, SLOT(updateButtonPressed()) );
-
-
+    connect(grabber, SIGNAL(currentFrames(int)), ui->framesLabel, SLOT(setNum(int)));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::setnumber(float frame)
+{
+    //std::cout << "set num" << frame << std::endl;
+    //ui->framesLabel->show();
 }
 
 void MainWindow::startButtonPressed()

@@ -7,7 +7,6 @@
 #include <QThread>
 
 // PCL
-
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/visualization/pcl_visualizer.h>
@@ -35,10 +34,12 @@ public:
 public slots:
     void startButtonPressed();
     void updateButtonPressed();
+    void setnumber(float frame);
 
 private:
     Ui::MainWindow *ui;
     QThread *grabberThread;
+    QThread *frameThread;
 protected:
     boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
     PointCloudT::Ptr cloud;

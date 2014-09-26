@@ -51,6 +51,19 @@
      <string>Update</string>
     </property>
    </widget>
+   <widget class="QLabel" name="framesLabel">
+    <property name="geometry">
+     <rect>
+      <x>930</x>
+      <y>710</y>
+      <width>67</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
