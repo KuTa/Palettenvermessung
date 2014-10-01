@@ -31,8 +31,8 @@ public:
   bool ready();
   void frames() const;
   void isRunning();
-  PointCloudT::Ptr  getCloud();
-  QImage image;
+  PointCloudT::Ptr  getCloud(std::vector<int> &indices);
+  QImage getImage();
 signals:
   void currentFrames(int frame_var) const;
 private:
@@ -50,5 +50,6 @@ private:
   boost::shared_ptr<pcl::Grabber> interface;
   boost::mutex mut;
   boost::shared_ptr<const PointCloudT> cloudPtr;
+  boost::shared_ptr<const pcl::io::openni2::Image> imgPtr;
 };
 #endif // GRABBER_H

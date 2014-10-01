@@ -8,6 +8,8 @@ QT       += core gui  #opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+QMAKE_CXXFLAGS += -std=c++11
+DEPENDS += "/home/kuschan/build-OpenGLPro-Desktop-Debug/"
 TARGET = OpenGLPro
 TEMPLATE = app
 
@@ -25,31 +27,31 @@ win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/local/lib/
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/local/lib/debug/ -lpcl_common
 else:unix: LIBS += -L$$PWD/../../../../usr/local/lib/ -lpcl_common
 
-INCLUDEPATH += $$PWD/../../../../usr/local/include/pcl-1.7\
+INCLUDEPATH += $$PWD/../../../../usr/local/include/pcl-1.8\
                 /usr/include/eigen3
-DEPENDPATH += $$PWD/../../../../usr/local/include/pcl-1.7
+DEPENDPATH += $$PWD/../../../../usr/local/include/pcl-1.8
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/local/lib/release/ -lpcl_io
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/local/lib/debug/ -lpcl_io
 else:unix: LIBS += -L$$PWD/../../../../usr/local/lib/ -lpcl_io
 
-INCLUDEPATH += $$PWD/../../../../usr/local/include/pcl-1.7
-DEPENDPATH += $$PWD/../../../../usr/local/include/pcl-1.7
+INCLUDEPATH += $$PWD/../../../../usr/local/include/pcl-1.8
+DEPENDPATH += $$PWD/../../../../usr/local/include/pcl-1.8
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/local/lib/release/ -lpcl_filters
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/local/lib/debug/ -lpcl_filters
 else:unix: LIBS += -L$$PWD/../../../../usr/local/lib/ -lpcl_filters
 
-INCLUDEPATH += $$PWD/../../../../usr/local/include/pcl-1.7
-DEPENDPATH += $$PWD/../../../../usr/local/include/pcl-1.7
+INCLUDEPATH += $$PWD/../../../../usr/local/include/pcl-1.8
+DEPENDPATH += $$PWD/../../../../usr/local/include/pcl-1.8
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/local/lib/release/ -lpcl_visualization
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/local/lib/debug/ -lpcl_visualization
 else:unix: LIBS += -L$$PWD/../../../../usr/local/lib/ -lpcl_visualization
 
-INCLUDEPATH += $$PWD/../../../../usr/local/include/pcl-1.7
-DEPENDPATH += $$PWD/../../../../usr/local/include/pcl-1.7
+INCLUDEPATH += $$PWD/../../../../usr/local/include/pcl-1.8
+DEPENDPATH += $$PWD/../../../../usr/local/include/pcl-1.8
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/lib/release/ -lvtkHybrid
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/lib/debug/ -lvtkHybrid
@@ -104,3 +106,13 @@ else:unix: LIBS += -L$$PWD/../../../../usr/lib/ -lvtkFiltering
 
 INCLUDEPATH += $$PWD/../../../../usr/include/vtk-5.8
 DEPENDPATH += $$PWD/../../../../usr/include/vtk-5.8
+
+
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../OpenNI2/Bin/x64-Release/release/ -lOpenNI2
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../OpenNI2/Bin/x64-Release/debug/ -lOpenNI2
+else:unix: LIBS += -L$$PWD/../OpenNI2/Bin/x64-Release/ -lOpenNI2
+
+INCLUDEPATH += $$PWD/../OpenNI2/Include
+DEPENDPATH += $$PWD/../OpenNI2/Include
+

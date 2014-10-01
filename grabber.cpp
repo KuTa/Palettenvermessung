@@ -1,6 +1,7 @@
 #include "grabber.h"
 #include <pcl/filters/voxel_grid.h>
 #include <chrono>
+#include <QMessageBox>
 
 Grabber::Grabber(QObject *parent):
         QObject(parent)
@@ -48,6 +49,13 @@ bool Grabber::initCamera()
  return true;
 }
 
+/*void Grabber::calibrate()
+{
+    //pcl::io::openni2::DepthImage.
+
+}*/
+
+
 bool Grabber::ready()
 {
     bool ready = false;
@@ -55,7 +63,7 @@ bool Grabber::ready()
             )
     {
         ready=true;
-        image = QImage(cloudPtr->width, cloudPtr->height, QImage::Format_RGB32);
+        //image = QImage(cloudPtr->width, cloudPtr->height, QImage::Format_RGB32);
     }
     return ready;
 }
@@ -71,11 +79,19 @@ void Grabber::frames() const
     while(true){
         frame = static_cast<int>(interface->getFramesPerSecond());
         emit currentFrames(frame);
+        /*if(frame == 30){
+             boost::mutex mut2;
+             mut2.lock();
+             QMessageBox msgBox;
+             msgBox.setText("Frames Error");
+             msgBox.exec();
+             mut2.unlock();
+        }*/
         std::this_thread::sleep_for(dura);
     }
 }
 
-PointCloudT::Ptr Grabber::getCloud()
+PointCloudT::Ptr Grabber::getCloud(std::vector<int> &indices)
 {
 
     updatePtr(cloudPtr);
@@ -87,14 +103,27 @@ PointCloudT::Ptr Grabber::getCloud()
 
     PointCloudT::Ptr cloudDataFront(new PointCloudT());
     //*cloudDataFront = *cloudPtr;
-    std::vector<int> indices;
+    //std::vector<int> indices;
     pcl::removeNaNFromPointCloud(*cloudPtr, *cloudDataFront, indices);
+    //for (int it = 0; it < indices.size();it++)
+    //std::cout << indices.at(it) << " it: " << it <<std::endl;
+    //std::cout << cloudDataFront->size() << std::endl;
     pcl::VoxelGrid<PointT> sor;
-     sor.setInputCloud (cloudDataFront);
-     sor.setLeafSize (0.01f, 0.01f, 0.01f);
-     sor.filter (*cloudDataFront);
+    /*sor.setInputCloud (cloudDataFront);
+    sor.setLeafSize (0.01f, 0.01f, 0.01f);
+    sor.filter (*cloudDataFront);*/
     mut.unlock();
     return cloudDataFront;
+}
+
+QImage Grabber::getImage()
+{
+    updateImg(imgPtr);
+    unsigned char *rgb_buffer = new unsigned char[ imgPtr->getWidth() * imgPtr->getHeight() * 3];
+    imgPtr->fillRGB(imgPtr->getWidth(), imgPtr->getHeight(), rgb_buffer);
+    QImage image = QImage(rgb_buffer, imgPtr->getWidth(), imgPtr->getHeight(), QImage::Format_RGB888);
+    //image.data_ptr()
+    return image;
 }
 
 void Grabber::updatePtr(const boost::shared_ptr<const PointCloudT>& cloud)
@@ -104,8 +133,10 @@ void Grabber::updatePtr(const boost::shared_ptr<const PointCloudT>& cloud)
     this->cloudPtr = cloud;
     mut.unlock();
 }
+
 void Grabber::updateImg(const boost::shared_ptr<const pcl::io::openni2::Image>& img)
 {
-
-    this->image.fromData(img->getData());
+    mut.lock();
+    this->imgPtr = img;
+    mut.unlock();
 }

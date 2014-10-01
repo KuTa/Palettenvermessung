@@ -5,6 +5,7 @@
 #include <QMainWindow>
 #include <QVTKWidget.h>
 #include <QThread>
+#include <QImage>
 
 // PCL
 #include <pcl/point_cloud.h>
@@ -35,11 +36,21 @@ public slots:
     void startButtonPressed();
     void updateButtonPressed();
     void setnumber(float frame);
+    void drawSomething();
+    void view_1();
+    void view_2();
+    void view_3();
+
 
 private:
     Ui::MainWindow *ui;
     QThread *grabberThread;
     QThread *frameThread;
+    QImage rgbImage;
+    std::vector<int> indices;
+    QImage image;
+    void updateCamera();
+
 protected:
     boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
     PointCloudT::Ptr cloud;
